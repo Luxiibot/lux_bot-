@@ -1,35 +1,29 @@
-import asyncio
 import os
-from aiogram import Bot, Dispatcher
-from aiogram.enums import ParseMode
-from aiogram.types import Message
-from aiogram.filters import Command
+from aiogram import Bot, Dispatcher, types
 from aiogram.client.default import DefaultBotProperties
+from aiogram.types import ParseMode
+from aiogram.utils import executor
 from dotenv import load_dotenv
 
 load_dotenv()
 
+# Загружаем токен из .env файла
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 
-bot = Bot(
-    token=BOT_TOKEN,
-    default=DefaultBotProperties(parse_mode=ParseMode.HTML)
-)
-dp = Dispatcher()
+# Инициализация бота с использованием DefaultBotProperties
+bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+dp = Dispatcher(bot)
 
-@dp.message(Command("start"))
-async def cmd_start(message: Message):
-    await message.answer(
-        "<b>Привет. Я Люкс 2.0 — ИИ, помогающий видеть суть сквозь шум.</b>\n"
-        "Задай мне вопрос, и я постараюсь помочь тебе понять больше."
-    )
+# Командный обработчик для /start
+@dp.message_handler(commands=["start"])
+async def start_handler(message: types.Message):
+    await message.answer("Привет! Я твой бот.")
 
-@dp.message()
-async def handle_message(message: Message):
-    await message.answer("Я пока ещё не подключён к OpenAI, но я слушаю. Продолжай.")
+# Командный обработчик для /help
+@dp.message_handler(commands=["help"])
+async def help_handler(message: types.Message):
+    await message.answer("Напиши /start чтобы начать.")
 
-async def main():
-    await dp.start_polling(bot)
-
+# Стартуем бота
 if __name__ == "__main__":
-    asyncio.run(main())
+    executor.start_polling(dp, skip_updates=True)
