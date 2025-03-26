@@ -1,7 +1,7 @@
 import os
 from aiogram import Bot, Dispatcher, types
 from aiogram.types import Message
-from aiogram.enums import ParseMode
+from aiogram import ParseMode
 from aiogram.utils.markdown import hbold
 from aiogram.client.default import DefaultBotProperties
 from dotenv import load_dotenv
